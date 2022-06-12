@@ -103,7 +103,7 @@ namespace ProgrammingExerciseBackend.Services
         public async Task<IEnumerable<ContactDTO>> FilterByName(string name)
         {
             return await _context.Contact
-                .Where(x => x.FirstName.Contains(name) || x.SecondName.Contains(name) || x.Addresses.Contains(name))
+                .Where(x => x.FirstName.ToUpper().Contains(name.ToUpper()) || x.SecondName.ToUpper().Contains(name.ToUpper()) || x.Addresses.ToUpper().Contains(name.ToUpper()))
                 .Select(x => new ContactDTO
                 {
                     Addresses = x.Addresses,
