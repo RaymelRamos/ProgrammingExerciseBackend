@@ -25,6 +25,13 @@ namespace ProgrammingExerciseBackend.Services
             _context.Database.EnsureCreated();
         }
 
+        /// <summary>
+        /// Method to create a new contact
+        /// </summary>
+        /// <param name="contact">New Contact</param>
+        /// <param name="file">Personal Photo File</param>
+        /// <param name="url">Path to personal photo</param>
+        /// <returns>Returns the new contact created</returns>
         public async Task<ContactDTO> Create(Contact contact, IFormFile file, string url)
         {
             string uniqueFileName = "";
@@ -47,6 +54,11 @@ namespace ProgrammingExerciseBackend.Services
 
         }
 
+        /// <summary>
+        /// Method to create a new contact
+        /// </summary>
+        /// <param name="id">Receive the id of the contact to be deleted</param>
+        /// <returns>Return null if the contact does not exist and return a blank string if the contact is deleted</returns>
         public async Task<string> Delete(int id)
         {
             var contact = await _context.Contact.FindAsync(id);
@@ -61,6 +73,12 @@ namespace ProgrammingExerciseBackend.Services
             return String.Empty;
         }
 
+        /// <summary>
+        /// Method to filter existing contacts based on an age range
+        /// </summary>
+        /// <param name="from">from age</param>
+        /// <param name="to">to age</param>
+        /// <returns>Returns the contact list that matches the search criteria</returns>
         public async Task<IEnumerable<ContactDTO>> FilterByAge(int from, int to)
         {
             return await _context.Contact
@@ -77,6 +95,11 @@ namespace ProgrammingExerciseBackend.Services
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Method to filter existing contacts based on a name
+        /// </summary>
+        /// <param name="name">Contact first name, second name and address </param>
+        /// <returns>Returns the contact list that matches the search criteria</returns>
         public async Task<IEnumerable<ContactDTO>> FilterByName(string name)
         {
             return await _context.Contact
@@ -93,6 +116,10 @@ namespace ProgrammingExerciseBackend.Services
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Method to get all stored contacts
+        /// </summary>
+        /// <returns>Returns all contacts</returns>
         public async Task<IEnumerable<ContactDTO>> GetAll()
         {
             return await _context.Contact.Select(x => new ContactDTO
@@ -106,6 +133,11 @@ namespace ProgrammingExerciseBackend.Services
             }).ToListAsync();
         }
 
+        /// <summary>
+        /// Method to get by id stored contacts
+        /// </summary>
+        /// <param name="id">Contact Id</param>
+        /// <returns>Method to obtain with contact according to the id</returns>
         public async Task<ContactDetailDTO> GetById(int id)
         {
             return await _context.Contact.Select(x => new ContactDetailDTO
@@ -120,6 +152,14 @@ namespace ProgrammingExerciseBackend.Services
             }).FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        /// <summary>
+        /// Method to update an existing contact
+        /// </summary>
+        /// <param name="contact">Updated contact</param>
+        /// <param name="id">Ccntact Id</param>
+        /// <param name="file">Personal Photo File</param>
+        /// <param name="url">Path to personal photo</param>
+        /// <returns></returns>
         public async Task<ContactDTO> Update(Contact contact, int id, IFormFile file, string url)
         {
             try
@@ -161,19 +201,7 @@ namespace ProgrammingExerciseBackend.Services
             };
         }
 
-        private int GetAge(DateTime birthdate)
-        {
-            DateTime now = DateTime.Today;
-            DateTime birthday = birthdate;
-
-            int age = now.Year - birthday.Year;
-
-            if (now.Month < birthday.Month || (now.Month == birthday.Month && now.Day < birthday.Day))//not had bday this year yet
-                age--;
-
-            return age;
-        }
-        private bool ContactExists(int id)
+       private bool ContactExists(int id)
         {
             return _context.Contact.Any(e => e.Id == id);
         }
@@ -197,6 +225,11 @@ namespace ProgrammingExerciseBackend.Services
             }
             return uniqueFileName;
         }
+        /// <summary>
+        /// Method to expose the photo of a given contact
+        /// </summary>
+        /// <param name="name">Personal photo name</param>
+        /// <returns></returns>
         public async Task<byte[]> LoadImage(string name)
         {
             if (!string.IsNullOrEmpty(name))
